@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Genea Access Control (Demo Mock)</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 760px; margin: 30px auto; padding: 0 16px; }
+  h1 { color: #1a7f5a; }
+  .panel { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+  label { display: block; margin: 8px 0 2px; font-size: 14px; }
+  input, select { padding: 6px; width: 260px; }
+  button { padding: 8px 14px; margin-top: 10px; cursor: pointer; border: none; border-radius: 5px; color: #fff; }
+  .btn-grant { background: #1a7f5a; }
+  .btn-revoke { background: #c0392b; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+  .status-active { color: #1a7f5a; font-weight: bold; }
+  .status-revoked { color: #c0392b; font-weight: bold; }
+  #toast { display: none; padding: 10px; margin-top: 10px; border-radius: 5px; background: #eafaf1; color: #1a7f5a; }
+</style>
+</head>
+<body>
+  <h1>Genea Access Control</h1>
+  <p>Demo admin console (mock) — provision and revoke credentials.</p>
+
+  <div class="panel">
+    <h3>Provision Credential</h3>
+    <label for="user">User email</label>
+    <input id="user" data-testid="user-input" placeholder="user@corp.com">
+    <label for="door">Door group</label>
+    <input id="door" data-testid="door-input" placeholder="Floor-3">
+    <label for="type">Credential type</label>
+    <select id="type" data-testid="type-select">
+      <option value="card">Card</option>
+      <option value="mobile">Mobile</option>
+    </select>
+    <br>
+    <button class="btn-grant" data-testid="grant-btn" onclick="grant()">Grant Access</button>
+    <div id="toast" data-testid="toast"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Credentials</h3>
+    <table>
+      <thead>
+        <tr><th>User</th><th>Door Group</th><th>Type</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody id="cred-body" data-testid="cred-table"></tbody>
+    </table>
+  </div>
+
+<script>
+  let creds = [];
+  let counter = 0;
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 3000);
+  }
+
+  function grant() {
+    const user = document.getElementById('user').value.trim();
+    const door = document.getElementById('door').value.trim();
+    const type = document.getElementById('type').value;
+    if (!user || !door) {
+      showToast('Error: user and door group are required');
+      return;
+    }
+    counter += 1;
+    creds.push({ id: 'CRED-' + counter, user, door, type, status: 'active' });
+    document.getElementById('user').value = '';
+    document.getElementById('door').value = '';
+    render();
+    showToast('Access granted to ' + user);
+  }
+
+  function revoke(id) {
+    const c = creds.find(c => c.id === id);
+    if (c) { c.status = 'revoked'; render(); showToast('Access revoked for ' + c.user); }
+  }
+
+  function render() {
+    const body = document.getElementById('cred-body');
+    body.innerHTML = '';
+    creds.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-testid', 'row-' + c.user);
+      const statusClass = c.status === 'active' ? 'status-active' : 'status-revoked';
+      tr.innerHTML =
+        '<td>' + c.user + '</td>' +
+        '<td>' + c.door + '</td>' +
+        '<td>' + c.type + '</td>' +
+        '<td class="' + statusClass + '" data-testid="status-' + c.user + '">' + c.status + '</td>' +
+        '<td>' + (c.status === 'active'
+          ? '<button class="btn-revoke" data-testid="revoke-' + c.user + '" onclick="revoke(\'' + c.id + '\')">Revoke</button>'
+          : '—') + '</td>';
+      body.appendChild(tr);
+    });
+  }
+</script>
+</body>
+</html>
