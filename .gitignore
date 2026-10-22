@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Playwright / test output
+test-results/
+playwright-report/
+reports/
+*.trace.zip
+
+# Editors & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets (future-proofing for the agentic qa)
+.env
+*.key
