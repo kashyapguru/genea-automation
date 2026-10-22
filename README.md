@@ -12,7 +12,7 @@ Gherkin `@tags`.
 
 > Demo/portfolio artifact. Runs against self-contained **mocks** of Genea's
 > systems, so it executes anywhere with no access to the real application.
-> Against the real product you'd swap the mock fixtures in `tests/conftest.py`
+> Against the real product we'd swap the mock fixtures in `tests/conftest.py`
 > for a thin REST client (and a real URL + login for the UI). The **feature
 > files and step definitions stay the same** — that's the point of BDD.
 
