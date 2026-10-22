@@ -10,7 +10,7 @@ It models the core domain the real product exposes:
   - provisioning (grant access), revoking (deactivate), and unlock attempts
 
 In a real engagement these methods would be replaced by calls to Genea's
-actual REST API (the JD names Postman / API validation), but the TEST DESIGN
+actual REST API, but the TEST DESIGN
 and assertions would be identical — which is the point of this demo.
 """
 
